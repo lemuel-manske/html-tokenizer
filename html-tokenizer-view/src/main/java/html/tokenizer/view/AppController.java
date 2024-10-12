@@ -45,9 +45,8 @@ public class AppController implements Initializable {
         openFileChooser.setText(resourceBundle.getString("--find-file"));
         chosenFile.setText(resourceBundle.getString("--chosen-file"));
         runParser.setText(resourceBundle.getString("--run-parser"));
-        parsingOutput.setText(resourceBundle.getString("--output-message-initial-content"));
+        parsingOutput.setText(resourceBundle.getString("--output-message"));
         tagId.setText(resourceBundle.getString("--tag-col"));
         tagOccurrences.setText(resourceBundle.getString("--tag-occurrences-col"));
     }
-
 }

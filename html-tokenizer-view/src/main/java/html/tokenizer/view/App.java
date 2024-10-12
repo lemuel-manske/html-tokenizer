@@ -17,15 +17,13 @@ public class App extends Application {
     public static final URL VIEW_URL = App.class.getResource("app-view.fxml");
     public static final ResourceBundle VIEW_CONTENT_PROPS = ResourceBundle.getBundle("messages");
 
-    public static final String WINDOW_TEXT = VIEW_CONTENT_PROPS.getString("--app-window-name");
-
     @Override
     public void start(final Stage stage) throws IOException {
         FXMLLoader app = new FXMLLoader(VIEW_URL, VIEW_CONTENT_PROPS);
 
         Scene scene = new Scene(app.load(), VIEW_WIDTH, VIEW_HEIGHT);
 
-        stage.setTitle(WINDOW_TEXT);
+        stage.setTitle(VIEW_CONTENT_PROPS.getString("--app-window-name"));
         stage.setScene(scene);
         stage.show();
     }
