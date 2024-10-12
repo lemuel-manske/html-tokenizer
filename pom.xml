@@ -9,6 +9,7 @@
 
     <modules>
         <module>html-tokenizer-view</module>
+        <module>html-tokenizer-parser</module>
     </modules>
 
     <groupId>html-tokenizer</groupId>
