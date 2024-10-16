@@ -14,6 +14,9 @@ public class HtmlLexer {
     private final Matcher htmlInput;
 
     public HtmlLexer(String input) {
+        // TODO: separate close, self-closing and open tags analysis
+        // TODO: separate self-closing tags
+
         if (input == null)
             throw new NullPointerException("HTML content cannot be null");
 
