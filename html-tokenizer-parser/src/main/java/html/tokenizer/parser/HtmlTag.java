@@ -4,6 +4,8 @@ import java.util.Objects;
 
 public class HtmlTag {
 
+    public static final String PRINT_FORMAT = "[ isClosingTag=%b , tagName=%s ]";
+
     private final String tagName;
     private final boolean isClosingTag;
 
@@ -38,7 +40,7 @@ public class HtmlTag {
 
     @Override
     public String toString() {
-        return "[ %b %s ]".formatted(isClosingTag, tagName);
+        return PRINT_FORMAT.formatted(isClosingTag, tagName);
     }
 
     @Override
