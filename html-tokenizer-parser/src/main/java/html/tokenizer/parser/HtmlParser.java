@@ -37,20 +37,20 @@ public final class HtmlParser {
             HtmlTag currTag = allTags.pop();
 
             if (currTag.isClosingTag()) {
-                closingTags.push(currTag);
-            } else {
-                HtmlTag expectedTag = HtmlTag.close(currTag.tagName());
-
-                if (closingTags.isEmpty())
-                    throw new MissingCloseTag(expectedTag);
-
-                HtmlTag closingTag = closingTags.pop();
-
-                if (!currTag.tagName().equals(closingTag.tagName()))
-                    throw new UnexpectedCloseTag(closingTag, expectedTag);
-
-                report.add(currTag.tagName());
+                closingTags.push(currTag); continue;
             }
+
+            HtmlTag expectedTag = HtmlTag.close(currTag.tagName());
+
+            if (closingTags.isEmpty())
+                throw new MissingCloseTag(expectedTag);
+
+            HtmlTag closingTag = closingTags.pop();
+
+            if (!currTag.tagName().equals(closingTag.tagName()))
+                throw new UnexpectedCloseTag(closingTag, expectedTag);
+
+            report.add(currTag.tagName());
         }
 
         return report;
