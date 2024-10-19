@@ -2,7 +2,12 @@ package html.tokenizer.parser;
 
 import java.util.Objects;
 
-public class HtmlTag {
+/**
+ * Represents an HTML tag.
+ *
+ * <p>It can be an open tag, a self-closing tag or a closing tag.
+ */
+public final class HtmlTag {
 
     public static final String PRINT_FORMAT = "[ isClosingTag=%b , tagName=%s ]";
 

@@ -5,6 +5,7 @@ import stack.Stack;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class HtmlLexerTest {
 
@@ -19,50 +20,87 @@ class HtmlLexerTest {
         assertThrows(NoContent.class,
                 () -> parse("\t\n\f\r\u00A0\s\s\s\s"));
     }
+    
+    @Test
+    void shouldNotRecognizeTagsStartingWithNumber() {
+        Stack<HtmlTag> tags = parse("<1><1html><1     >");
+
+        assertTrue(tags.isEmpty());
+    }
 
     @Test
-    void tokenizeOpenTag() throws MalformedTag {
-        Stack<HtmlTag> tags = parse("<html>");
+    void shouldNotRecognizeEmptyTagName() {
+        Stack<HtmlTag> tags = parse("<>");
+
+        assertTrue(tags.isEmpty());
+    }
+
+    @Test
+    void shouldNotRecognizeTagsWithSpaceBetweenOpenAndCloseTokens() {
+        Stack<HtmlTag> tags = parse(
+                """
+                <\s\s\t\r\f
+                html>
+                
+                <\s\s\f\r
+                /\s\s\f\r
+                html>
+                """);
+
+        assertTrue(tags.isEmpty());
+    }
+
+    @Test
+    void shouldRecognizeOpenTag() {
+        Stack<HtmlTag> tags = parse(
+                """
+                <html\s\s\s\f\r
+                >
+                <html>
+                """);
 
         assertEquals(HtmlTag.openTag("html"), tags.pop());
     }
 
     @Test
-    void tokenizeClosingTag() throws MalformedTag {
+    void tokenizeClosingTag() {
         Stack<HtmlTag> tags = parse("</html>");
 
         assertEquals(HtmlTag.closingTag("html"), tags.pop());
     }
 
     @Test
-    void tokenizeNotFormattedTag() throws MalformedTag {
+    void tokenizeTagWithSpaces() {
         Stack<HtmlTag> tags = parse(
-                "<\f\r\t\s\s\n\nhtml\f\r\n\s\s\s>" +
-                "<\f\r\t\s/\s\n\nhtml\f\r\n\s\s\s>");
+                """
+                <html\f\r
+                \s\s\s>
+                </html\f\r
+                \s\s\s>
+                """);
 
         assertEquals(HtmlTag.closingTag("html"), tags.pop());
         assertEquals(HtmlTag.openTag("html"), tags.pop());
     }
 
     @Test
-    void tokenizeEmptyTagThrowsMalformedTag() {
-        assertThrows(MalformedTag.class,
-                () -> parse("<>"));
-    }
-
-    @Test
-    void tokenizeSelfClosingTags() throws MalformedTag {
-        Stack<HtmlTag> tags = parse("<\n\nhr\r\r\t\n\s\s\s\f/>");
+    void tokenizeSelfClosingTags() {
+        Stack<HtmlTag> tags = parse(
+                """
+                <hr\r\r\t
+                \s\s\s\f/>
+                <img/>
+                """);
 
         assertEquals(HtmlTag.openTag("hr"), tags.pop());
     }
 
     @Test
-    void tokenizeTagWithAttribute() throws MalformedTag {
+    void tokenizeTagWithAttribute() {
         Stack<HtmlTag> tags = parse(
-                "<a\s\nhref=\"https://www.google.com\">" +
-                "<\s\s\s\n\timg src=\"https://www.google.com/logo.png\"/>" +
-                "<div\s\s\sclass=\"container\">");
+                "<a   \nhref=\"https://www.google.com\">" +
+                "<img        src=\"https://www.google.com/logo.png\"/>" +
+                "<div   class=\"container\">");
 
         assertEquals(HtmlTag.openTag("div"), tags.pop());
         assertEquals(HtmlTag.openTag("img"), tags.pop());
@@ -70,36 +108,31 @@ class HtmlLexerTest {
     }
 
     @Test
-    void tokenizeHtmlStructure() throws MalformedTag {
+    void tokenizeHtmlStructure() {
         Stack<HtmlTag> tags = parse("""
                 <html>
-                <          body      >
-                
-                
-                
-                <
-                
-                      h1 \f\f\f\t\s\s>
+                <body>
+                <h1>
                 Hello World!
-                </   h1>
-                <   p  >
+                </h1>
+                <p>
                 This is a paragraph.
-                <  /    p>
-                </body     \n\t>
-                </html    >
+                </p>
+                </body>
+                </html>
                 """);
 
         assertEquals(HtmlTag.closingTag("html"), tags.pop());
         assertEquals(HtmlTag.closingTag("body"), tags.pop());
+        assertEquals(HtmlTag.closingTag("p"), tags.pop());
         assertEquals(HtmlTag.openTag("p"), tags.pop());
         assertEquals(HtmlTag.closingTag("h1"), tags.pop());
         assertEquals(HtmlTag.openTag("h1"), tags.pop());
-        assertEquals(HtmlTag.closingTag("p"), tags.pop());
         assertEquals(HtmlTag.openTag("body"), tags.pop());
         assertEquals(HtmlTag.openTag("html"), tags.pop());
     }
 
-    private Stack<HtmlTag> parse(final String input) throws MalformedTag {
+    private Stack<HtmlTag> parse(final String input) {
         return new HtmlLexer(input).tokenize();
     }
 }

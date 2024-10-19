@@ -6,5 +6,5 @@ package html.tokenizer.parser;
  *
  * <p>Nullish are: <code>/t /n /r /f /s /u00A0</code>
  */
-public class NoContent extends RuntimeException {
+public final class NoContent extends RuntimeException {
 }

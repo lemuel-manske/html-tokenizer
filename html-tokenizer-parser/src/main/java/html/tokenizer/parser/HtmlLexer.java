@@ -6,69 +6,59 @@ import stack.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class HtmlLexer {
+/**
+ * Tokenizes HTML content into {@link HtmlTag} instances.
+ */
+public final class HtmlLexer {
 
-    public static final String NULLISH_CHARACTERS = "[\s\f\n\r\t\u00A0]";
-    private static final Pattern TAG_PATTERN = Pattern.compile("<(/?)\\s*([a-zA-Z][a-zA-Z0-9]*)([^<>])*(\\s*/)?\\s*>");
+    private static final String OPEN_TOKEN = "<(/?)";
+    public static final String CLOSE_TOKEN = "/?>";
+    public static final String TAG_NAME = "([a-zA-Z][a-zA-Z0-9]*)";
+    public static final String REST_OF_TAG_CONTENT = "[^>]*";
+
+    private static final Pattern HTML_TAG = Pattern.compile(OPEN_TOKEN + TAG_NAME + REST_OF_TAG_CONTENT + CLOSE_TOKEN);
 
     private final Matcher htmlInput;
 
     public HtmlLexer(String input) {
-        // TODO: separate close, self-closing and open tags analysis
-        // TODO: separate self-closing tags
-
         if (input == null)
             throw new NullPointerException("HTML content cannot be null");
 
         String trimmedInput = input.trim();
 
-        if (trimmedInput.isEmpty() || trimmedInput.matches(NULLISH_CHARACTERS))
+        if (trimmedInput.isEmpty() || trimmedInput.matches("[ \f\n\r\t\u00A0]"))
             throw new NoContent();
 
-        this.htmlInput = TAG_PATTERN.matcher(input);
+        this.htmlInput = HTML_TAG.matcher(input);
     }
 
-    public Stack<HtmlTag> tokenize() throws MalformedTag {
+    public Stack<HtmlTag> tokenize() {
         Stack<HtmlTag> tags = new ListStack<>();
 
         while (htmlInput.find()) {
-            if (getTagName() == null || getTagName().isEmpty())
-                throw new MalformedTag();
-
-            if (isOpenTag() || isSelfClosingTag())
-                tags.push(HtmlTag.openTag(getTagName()));
+            if (isOpenTag())
+                tags.push(HtmlTag.openTag(tagName()));
 
             else if (isCloseTag())
-                tags.push(HtmlTag.closingTag(getTagName()));
+                tags.push(HtmlTag.closingTag(tagName()));
         }
-
-        if (tags.isEmpty())
-            throw new MalformedTag();
 
         return tags;
     }
 
     private boolean isCloseTag() {
-        return getClosingIndicator().equals("/");
+        return closeTagIndicator().equals("/");
     }
 
     private boolean isOpenTag() {
-        return getClosingIndicator().isEmpty();
+        return closeTagIndicator().isEmpty();
     }
 
-    private boolean isSelfClosingTag() {
-        return getSelfClosingIndicator() != null && !getSelfClosingIndicator().isEmpty();
-    }
-
-    private String getClosingIndicator() {
+    private String closeTagIndicator() {
         return htmlInput.group(1);
     }
 
-    private String getTagName() {
+    private String tagName() {
         return htmlInput.group(2);
-    }
-
-    private String getSelfClosingIndicator() {
-        return htmlInput.group(4);
     }
 }
