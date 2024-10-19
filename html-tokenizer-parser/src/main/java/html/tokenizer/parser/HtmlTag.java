@@ -6,6 +6,9 @@ import java.util.Objects;
  * Represents an HTML tag.
  *
  * <p>It can be an open tag, a self-closing tag or a closing tag.
+ *
+ * @see HtmlLexer
+ * @see HtmlParser
  */
 public final class HtmlTag {
 
@@ -14,11 +17,11 @@ public final class HtmlTag {
     private final String tagName;
     private final boolean isClosingTag;
 
-    public static HtmlTag openTag(final String tagName) {
+    public static HtmlTag open(final String tagName) {
         return new HtmlTag(tagName, false);
     }
 
-    public static HtmlTag closingTag(final String tagName) {
+    public static HtmlTag close(final String tagName) {
         return new HtmlTag(tagName, true);
     }
 
@@ -27,7 +30,7 @@ public final class HtmlTag {
         this.isClosingTag = isClosingTag;
     }
 
-    public String getTagName() {
+    public String tagName() {
         return tagName;
     }
 

@@ -59,14 +59,14 @@ class HtmlLexerTest {
                 <html>
                 """);
 
-        assertEquals(HtmlTag.openTag("html"), tags.pop());
+        assertEquals(HtmlTag.open("html"), tags.pop());
     }
 
     @Test
     void tokenizeClosingTag() {
         Stack<HtmlTag> tags = parse("</html>");
 
-        assertEquals(HtmlTag.closingTag("html"), tags.pop());
+        assertEquals(HtmlTag.close("html"), tags.pop());
     }
 
     @Test
@@ -79,8 +79,8 @@ class HtmlLexerTest {
                 \s\s\s>
                 """);
 
-        assertEquals(HtmlTag.closingTag("html"), tags.pop());
-        assertEquals(HtmlTag.openTag("html"), tags.pop());
+        assertEquals(HtmlTag.close("html"), tags.pop());
+        assertEquals(HtmlTag.open("html"), tags.pop());
     }
 
     @Test
@@ -92,7 +92,8 @@ class HtmlLexerTest {
                 <img/>
                 """);
 
-        assertEquals(HtmlTag.openTag("hr"), tags.pop());
+        assertEquals(HtmlTag.open("img"), tags.pop());
+        assertEquals(HtmlTag.open("hr"), tags.pop());
     }
 
     @Test
@@ -102,9 +103,9 @@ class HtmlLexerTest {
                 "<img        src=\"https://www.google.com/logo.png\"/>" +
                 "<div   class=\"container\">");
 
-        assertEquals(HtmlTag.openTag("div"), tags.pop());
-        assertEquals(HtmlTag.openTag("img"), tags.pop());
-        assertEquals(HtmlTag.openTag("a"), tags.pop());
+        assertEquals(HtmlTag.open("div"), tags.pop());
+        assertEquals(HtmlTag.open("img"), tags.pop());
+        assertEquals(HtmlTag.open("a"), tags.pop());
     }
 
     @Test
@@ -122,14 +123,14 @@ class HtmlLexerTest {
                 </html>
                 """);
 
-        assertEquals(HtmlTag.closingTag("html"), tags.pop());
-        assertEquals(HtmlTag.closingTag("body"), tags.pop());
-        assertEquals(HtmlTag.closingTag("p"), tags.pop());
-        assertEquals(HtmlTag.openTag("p"), tags.pop());
-        assertEquals(HtmlTag.closingTag("h1"), tags.pop());
-        assertEquals(HtmlTag.openTag("h1"), tags.pop());
-        assertEquals(HtmlTag.openTag("body"), tags.pop());
-        assertEquals(HtmlTag.openTag("html"), tags.pop());
+        assertEquals(HtmlTag.close("html"), tags.pop());
+        assertEquals(HtmlTag.close("body"), tags.pop());
+        assertEquals(HtmlTag.close("p"), tags.pop());
+        assertEquals(HtmlTag.open("p"), tags.pop());
+        assertEquals(HtmlTag.close("h1"), tags.pop());
+        assertEquals(HtmlTag.open("h1"), tags.pop());
+        assertEquals(HtmlTag.open("body"), tags.pop());
+        assertEquals(HtmlTag.open("html"), tags.pop());
     }
 
     private Stack<HtmlTag> parse(final String input) {

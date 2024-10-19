@@ -8,6 +8,11 @@ import java.util.regex.Pattern;
 
 /**
  * Tokenizes HTML content into {@link HtmlTag} instances.
+ *
+ * <p>Throws a {@link NoContent} if the input has no content.
+ *
+ * @see HtmlTag
+ * @see HtmlParser
  */
 public final class HtmlLexer {
 
@@ -37,10 +42,10 @@ public final class HtmlLexer {
 
         while (htmlInput.find()) {
             if (isOpenTag())
-                tags.push(HtmlTag.openTag(tagName()));
+                tags.push(HtmlTag.open(tagName()));
 
             else if (isCloseTag())
-                tags.push(HtmlTag.closingTag(tagName()));
+                tags.push(HtmlTag.close(tagName()));
         }
 
         return tags;
