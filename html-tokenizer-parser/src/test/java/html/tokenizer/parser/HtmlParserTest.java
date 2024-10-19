@@ -114,7 +114,7 @@ class HtmlParserTest {
 
         Report report = parse(html);
 
-        assertEquals(1, report.get("html").count());
+        assertEquals(1, report.get("html").count()); // NO SONAR
         assertEquals(1, report.get("head").count());
         assertEquals(1, report.get("title").count());
         assertEquals(1, report.get("body").count());

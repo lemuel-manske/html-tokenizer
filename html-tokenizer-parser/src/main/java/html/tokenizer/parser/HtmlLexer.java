@@ -64,6 +64,6 @@ public final class HtmlLexer {
     }
 
     private String tagName() {
-        return htmlInput.group(2);
+        return htmlInput.group(2).toLowerCase();
     }
 }

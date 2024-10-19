@@ -133,6 +133,32 @@ class HtmlLexerTest {
         assertEquals(HtmlTag.open("html"), tags.pop());
     }
 
+    @Test
+    void tokenizeUpperCaseTagsToLowerCaseOnes() {
+        Stack<HtmlTag> tags = parse(
+                """
+                <HTML>
+                <BODY>
+                <H1>
+                Hello World!
+                </H1>
+                <P>
+                This is a paragraph.
+                </P>
+                </BODY>
+                </HTML>
+                """);
+
+        assertEquals(HtmlTag.close("html"), tags.pop());
+        assertEquals(HtmlTag.close("body"), tags.pop());
+        assertEquals(HtmlTag.close("p"), tags.pop());
+        assertEquals(HtmlTag.open("p"), tags.pop());
+        assertEquals(HtmlTag.close("h1"), tags.pop());
+        assertEquals(HtmlTag.open("h1"), tags.pop());
+        assertEquals(HtmlTag.open("body"), tags.pop());
+        assertEquals(HtmlTag.open("html"), tags.pop());
+    }
+
     private Stack<HtmlTag> parse(final String input) {
         return new HtmlLexer(input).tokenize();
     }
