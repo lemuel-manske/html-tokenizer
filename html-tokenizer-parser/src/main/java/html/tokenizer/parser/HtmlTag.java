@@ -1,7 +1,5 @@
 package html.tokenizer.parser;
 
-import java.util.Objects;
-
 /**
  * Represents an HTML tag.
  *
@@ -39,20 +37,15 @@ public final class HtmlTag {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        HtmlTag htmlTag = (HtmlTag) obj;
-        return isClosingTag == htmlTag.isClosingTag && tagName.equals(htmlTag.tagName);
-    }
-
-    @Override
     public String toString() {
         return PRINT_FORMAT.formatted(isClosingTag, tagName);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(tagName, isClosingTag);
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        HtmlTag htmlTag = (HtmlTag) obj;
+        return isClosingTag == htmlTag.isClosingTag && tagName.equals(htmlTag.tagName);
     }
 }

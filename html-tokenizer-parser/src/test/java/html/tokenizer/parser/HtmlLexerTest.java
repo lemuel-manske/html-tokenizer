@@ -3,6 +3,7 @@ package html.tokenizer.parser;
 import org.junit.jupiter.api.Test;
 import stack.Stack;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,9 +17,8 @@ class HtmlLexerTest {
     }
 
     @Test
-    void throwNoContentForEmptyHtml() {
-        assertThrows(NoContent.class,
-                () -> parse("\t\n\f\r\u00A0\s\s\s\s"));
+    void doNothingForEmptyInput() {
+        assertDoesNotThrow(() -> parse("\t\n\f\r\u00A0\s\s\s\s"));
     }
     
     @Test

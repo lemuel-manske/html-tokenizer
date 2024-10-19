@@ -2,10 +2,24 @@ package html.tokenizer.parser;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class HtmlParserTest {
+
+    @Test
+    void givenEmptyInputDoNothing() {
+        assertDoesNotThrow(() -> parse(""));
+    }
+
+    @Test
+    void givenEmptyInputThenReportIsEmpty() throws UnexpectedCloseTag, MissingCloseTag {
+        HtmlReport htmlReport = parse("");
+
+        assertTrue(htmlReport.isEmpty());
+    }
 
     @Test
     void givenMissingCloseTagsThenThrowMissingCloseTag() {
@@ -98,8 +112,10 @@ class HtmlParserTest {
         assertEquals(HtmlTag.close("html"), exception.expectedTag());
     }
 
+
+
     @Test
-    void givenValidHtmlThenGenerateReport() {
+    void givenValidHtmlThenGenerateReport() throws UnexpectedCloseTag, MissingCloseTag {
         String html =
                 """
                 <html>
@@ -108,20 +124,23 @@ class HtmlParserTest {
                 </head>
                 <body>
                     <h1>Test</h1>
+                    <p>First</p>
+                    <p>Second</p>
                 </body>
                 </html>
                 """;
 
-        Report report = parse(html);
+        HtmlReport htmlHtmlReport = parse(html);
 
-        assertEquals(1, report.get("html").count());
-        assertEquals(1, report.get("head").count());
-        assertEquals(1, report.get("title").count());
-        assertEquals(1, report.get("body").count());
-        assertEquals(1, report.get("h1").count());
+        assertEquals(1, htmlHtmlReport.getTagCount("html"));
+        assertEquals(1, htmlHtmlReport.getTagCount("head"));
+        assertEquals(1, htmlHtmlReport.getTagCount("title"));
+        assertEquals(1, htmlHtmlReport.getTagCount("body"));
+        assertEquals(1, htmlHtmlReport.getTagCount("h1"));
+        assertEquals(2, htmlHtmlReport.getTagCount("p"));
     }
 
-    private Report parse(final String html) {
+    private HtmlReport parse(final String html) throws UnexpectedCloseTag, MissingCloseTag {
         return new HtmlParser(html).parse();
     }
 }

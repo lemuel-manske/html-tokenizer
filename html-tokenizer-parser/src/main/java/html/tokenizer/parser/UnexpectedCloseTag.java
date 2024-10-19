@@ -3,7 +3,7 @@ package html.tokenizer.parser;
 /**
  * Indicates that a close tag was found when it was not expected.
  */
-public final class UnexpectedCloseTag extends RuntimeException {
+public final class UnexpectedCloseTag extends Exception {
 
     public static final String UNEXPECTED_CLOSE_TAG = "Unexpected close tag %s";
 
@@ -12,6 +12,7 @@ public final class UnexpectedCloseTag extends RuntimeException {
 
     public UnexpectedCloseTag(final HtmlTag unexpectedTag, final HtmlTag expectedTag) {
         super(UNEXPECTED_CLOSE_TAG.formatted(unexpectedTag.tagName()));
+
         this.unexpectedTag = unexpectedTag;
         this.expectedTag = expectedTag;
     }

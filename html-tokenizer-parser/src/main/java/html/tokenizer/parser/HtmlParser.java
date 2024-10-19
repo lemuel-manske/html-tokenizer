@@ -11,12 +11,12 @@ import stack.Stack;
  * <p>It throws a {@link MissingCloseTag} if a tag is missing a closing tag, and
  * a {@link UnexpectedCloseTag} if a closing tag is unexpected.
  *
- * <p>It returns a {@link Report} with all the tags that were correctly closed.
+ * <p>It returns a {@link HtmlReport} with all the tags that were correctly closed.
  *
  * @see HtmlLexer
  * @see MissingCloseTag
  * @see UnexpectedCloseTag
- * @see Report
+ * @see HtmlReport
  */
 public final class HtmlParser {
 
@@ -26,12 +26,12 @@ public final class HtmlParser {
         this.lexer = new HtmlLexer(input);
     }
 
-    public Report parse() {
-        Report report = new Report();
-
-        Stack<HtmlTag> closingTags = new ListStack<>();
+    public HtmlReport parse() throws MissingCloseTag, UnexpectedCloseTag {
+        HtmlReport htmlHtmlReport = new HtmlReport();
 
         Stack<HtmlTag> allTags = lexer.tokenize();
+
+        Stack<HtmlTag> closingTags = new ListStack<>();
 
         while (!allTags.isEmpty()) {
             HtmlTag currTag = allTags.pop();
@@ -50,9 +50,9 @@ public final class HtmlParser {
             if (!currTag.tagName().equals(closingTag.tagName()))
                 throw new UnexpectedCloseTag(closingTag, expectedTag);
 
-            report.add(currTag.tagName());
+            htmlHtmlReport.incrementTagCount(currTag.tagName());
         }
 
-        return report;
+        return htmlHtmlReport;
     }
 }

@@ -9,8 +9,6 @@ import java.util.regex.Pattern;
 /**
  * Tokenizes HTML content into {@link HtmlTag} instances.
  *
- * <p>Throws a {@link NoContent} if the input has no content.
- *
  * @see HtmlTag
  * @see HtmlParser
  */
@@ -25,14 +23,9 @@ public final class HtmlLexer {
 
     private final Matcher htmlInput;
 
-    public HtmlLexer(String input) {
+    public HtmlLexer(final String input) {
         if (input == null)
             throw new NullPointerException("HTML content cannot be null");
-
-        String trimmedInput = input.trim();
-
-        if (trimmedInput.isEmpty() || trimmedInput.matches("[ \f\n\r\t\u00A0]"))
-            throw new NoContent();
 
         this.htmlInput = HTML_TAG.matcher(input);
     }
