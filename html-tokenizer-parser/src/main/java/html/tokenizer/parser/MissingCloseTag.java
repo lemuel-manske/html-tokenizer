@@ -3,7 +3,7 @@ package html.tokenizer.parser;
 /**
  * Indicates that html content is missing a closing tag.
  */
-public final class MissingCloseTag extends RuntimeException {
+public final class MissingCloseTag extends Exception {
 
     public static final String MISSING_CLOSE_TAG = "Missing close tag %s";
 
@@ -11,6 +11,7 @@ public final class MissingCloseTag extends RuntimeException {
 
     public MissingCloseTag(final HtmlTag missingTag) {
         super(MISSING_CLOSE_TAG.formatted(missingTag.tagName()));
+
         this.missingTag = missingTag;
     }
 
