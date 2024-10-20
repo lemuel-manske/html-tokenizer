@@ -1,52 +1,108 @@
 package html.tokenizer.view;
 
+import html.tokenizer.parser.HtmlParser;
+import html.tokenizer.parser.HtmlReport;
+import html.tokenizer.parser.MissingCloseTag;
+import html.tokenizer.parser.UnexpectedCloseTag;
+import html.tokenizer.view.model.TagOccurrence;
 import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.Map;
 
-public class AppController implements Initializable {
+public class AppController {
 
     @FXML private Button openFileChooser;
     @FXML private TextField chosenFile;
-
     @FXML private Button runParser;
-
     @FXML private TextArea parsingOutput;
+    @FXML private TableView<TagOccurrence> tags;
+    @FXML private TableColumn<TagOccurrence, String> tagId;
+    @FXML private TableColumn<TagOccurrence, Integer> tagOccurrences;
 
-    @FXML private TableView<Tag> tags;
-    @FXML private TableColumn<Tag, String> tagId;
-    @FXML private TableColumn<Tag, Integer> tagOccurrences;
+    private final ObservableList<TagOccurrence> tagsList = FXCollections.observableArrayList();
 
     @FXML
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        makeColumnsHalfSizeOfTable();
+    public void initialize() {
+        openFileChooser.setText(Messages.SELECT_HTML_FILE);
+        chosenFile.setText(Messages.NO_FILE_SELECTED);
+        runParser.setText(Messages.RUN_PARSER);
+        tagId.setText(Messages.TAG_COLUMN);
+        tagOccurrences.setText(Messages.TAG_OCCURRENCES_COLUMN);
 
-        setTextForComponentsFromBundle(resourceBundle);
-    }
-
-    private void makeColumnsHalfSizeOfTable() {
         DoubleBinding size = tags.widthProperty().divide(2);
-
         tagId.prefWidthProperty().bind(size);
         tagOccurrences.prefWidthProperty().bind(size);
+
+        tagId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTag()));
+        tagOccurrences.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getOccurrences()).asObject());
     }
 
-    private void setTextForComponentsFromBundle(ResourceBundle resourceBundle) {
-        openFileChooser.setText(resourceBundle.getString("--find-file"));
-        chosenFile.setText(resourceBundle.getString("--chosen-file"));
-        runParser.setText(resourceBundle.getString("--run-parser"));
-        parsingOutput.setText(resourceBundle.getString("--output-message"));
-        tagId.setText(resourceBundle.getString("--tag-col"));
-        tagOccurrences.setText(resourceBundle.getString("--tag-occurrences-col"));
+    @FXML
+    public void selectHtmlFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(Messages.SELECT_HTML_FILE);
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("HTML Files", "*.html"));
+
+        File file = fileChooser.showOpenDialog(openFileChooser.getScene().getWindow());
+
+        if (file == null) {
+            chosenFile.setText(Messages.NO_FILE_SELECTED);
+            return;
+        }
+
+        chosenFile.setText(file.getAbsolutePath());
+    }
+
+    @FXML
+    public void parseHtmlContent() throws IOException {
+        File htmlFile = new File(chosenFile.getText());
+
+        if (!htmlFile.exists()) {
+            parsingOutput.setText(Messages.NO_FILE_SELECTED);
+            return;
+        }
+
+        String fileContent = Files.readString(htmlFile.toPath(), StandardCharsets.UTF_8);
+
+        if (fileContent.isEmpty()) {
+            parsingOutput.setText(Messages.FILE_HAS_NO_CONTENT);
+            return;
+        }
+
+        try {
+            HtmlReport htmlReport = new HtmlParser(fileContent).parse();
+
+            tagsList.clear();
+
+            for (Map.Entry<String, Integer> tag : htmlReport.entries().entrySet())
+                tagsList.add(TagOccurrence.fromMapEntry(tag));
+
+            tags.setItems(tagsList);
+
+            parsingOutput.setText(Messages.PARSING_SUCCESS);
+        }
+
+        catch (UnexpectedCloseTag e) {
+            parsingOutput.setText(Messages.UNEXPECTED_CLOSE_TAG.formatted(e.expectedTag(), e.unexpectedTag()));
+        }
+
+        catch (MissingCloseTag e) {
+            parsingOutput.setText(Messages.MISSING_CLOSE_TAG.formatted(e.missingTag()));
+        }
     }
 }
