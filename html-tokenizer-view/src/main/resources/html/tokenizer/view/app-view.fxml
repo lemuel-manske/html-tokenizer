@@ -1,74 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox
-    spacing="20"
-    xmlns="http://javafx.com/javafx"
-    xmlns:fx="http://javafx.com/fxml"
-    fx:controller="html.tokenizer.view.AppController">
+    xmlns:fx="http://javafx.com/fxml">
 
     <padding>
         <Insets
-                bottom="15.0"
-                top="15.0"
-                left="25.0"
-                right="25.0"/>
+            bottom="15.0"
+            top="15.0"
+            left="25.0"
+            right="25.0"/>
     </padding>
 
-    <BorderPane>
-        <left>
-            <HBox
-                    spacing="10"
-                    alignment="CENTER_LEFT">
-
-                <Button
-                        prefWidth="100"
-                        fx:id="openFileChooser"/>
-
-                <TextField
-                        prefWidth="320"
-                        disable="true"
-                        fx:id="chosenFile"/>
-            </HBox>
-        </left>
-
-        <right>
-            <Button
-                    minWidth="60"
-                    maxWidth="80"
-                    fx:id="runParser"/>
-        </right>
-    </BorderPane>
-
-    <TextArea
-            maxHeight="120"
-            disable="true"
-            fx:id="parsingOutput"/>
-
-    <TableView fx:id="tags">
-        <columns>
-            <TableColumn
-                    resizable="false"
-                    reorderable="false"
-                    editable="false"
-                    fx:id="tagId"/>
-
-            <TableColumn
-                    resizable="false"
-                    reorderable="false"
-                    editable="false"
-                    fx:id="tagOccurrences"/>
-        </columns>
-    </TableView>
+    <fx:include source="header-view.fxml" />
+    <fx:include source="tag-table-view.fxml" />
 </VBox>
 

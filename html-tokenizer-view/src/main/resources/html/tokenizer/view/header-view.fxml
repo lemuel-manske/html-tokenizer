@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+
+<?import javafx.scene.control.TextArea?>
+
+
+<VBox
+    spacing="20"
+    xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="html.tokenizer.view.HeaderController">
+
+    <HBox
+        spacing="10"
+        alignment="CENTER_LEFT">
+
+        <Button
+            prefWidth="80"
+            onAction="#selectHtmlFile"
+            fx:id="openFileChooser"/>
+
+        <TextField
+            prefWidth="320"
+            disable="true"
+            fx:id="chosenFile"/>
+
+        <Button
+            prefWidth="120"
+            onAction="#parseHtmlContent"
+            fx:id="runParser"/>
+    </HBox>
+
+    <TextArea
+        prefHeight="120"
+        disable="true"
+        fx:id="parsingOutput"/>
+</VBox>
