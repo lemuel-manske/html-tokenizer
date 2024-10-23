@@ -99,10 +99,12 @@ public class AppController {
 
         catch (UnexpectedCloseTag e) {
             parsingOutput.setText(Messages.UNEXPECTED_CLOSE_TAG.formatted(e.expectedTag(), e.unexpectedTag()));
+            tagsList.clear();
         }
 
         catch (MissingCloseTag e) {
             parsingOutput.setText(Messages.MISSING_CLOSE_TAG.formatted(e.missingTag()));
+            tagsList.clear();
         }
     }
 }

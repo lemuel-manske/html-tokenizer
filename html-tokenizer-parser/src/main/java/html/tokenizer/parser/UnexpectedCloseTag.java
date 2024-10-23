@@ -1,7 +1,7 @@
 package html.tokenizer.parser;
 
 /**
- * Indicates that a close tag was found when it was not expected.
+ * Indicates that a close tag was found, but it was not expected.
  */
 public final class UnexpectedCloseTag extends Exception {
 

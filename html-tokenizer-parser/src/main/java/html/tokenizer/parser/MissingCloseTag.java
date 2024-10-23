@@ -1,7 +1,7 @@
 package html.tokenizer.parser;
 
 /**
- * Indicates that html content is missing a closing tag.
+ * Indicates that is missing a closing tag for a given tag in the HTML document.
  */
 public final class MissingCloseTag extends Exception {
 
