@@ -1,7 +1,7 @@
 package html.tokenizer.parser;
 
+import list.StaticList;
 import org.junit.jupiter.api.Test;
-import stack.Stack;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,21 +23,21 @@ class HtmlLexerTest {
     
     @Test
     void shouldNotRecognizeTagsStartingWithNumber() {
-        Stack<HtmlTag> tags = parse("<1><1html><1     >");
+        StaticList<HtmlTag> tags = parse("<1><1html><1     >");
 
         assertTrue(tags.isEmpty());
     }
 
     @Test
     void shouldNotRecognizeEmptyTagName() {
-        Stack<HtmlTag> tags = parse("<>");
+        StaticList<HtmlTag> tags = parse("<>");
 
         assertTrue(tags.isEmpty());
     }
 
     @Test
     void shouldNotRecognizeTagsWithSpaceBetweenOpenAndCloseTokens() {
-        Stack<HtmlTag> tags = parse(
+        StaticList<HtmlTag> tags = parse(
                 """
                 <\s\s\t\r\f
                 html>
@@ -52,26 +52,26 @@ class HtmlLexerTest {
 
     @Test
     void shouldRecognizeOpenTag() {
-        Stack<HtmlTag> tags = parse(
+        StaticList<HtmlTag> tags = parse(
                 """
                 <html\s\s\s\f\r
                 >
                 <html>
                 """);
 
-        assertEquals(HtmlTag.open("html"), tags.pop());
+        assertEquals(HtmlTag.open("html"), tags.get(0));
     }
 
     @Test
     void tokenizeClosingTag() {
-        Stack<HtmlTag> tags = parse("</html>");
+        StaticList<HtmlTag> tags = parse("</html>");
 
-        assertEquals(HtmlTag.close("html"), tags.pop());
+        assertEquals(HtmlTag.close("html"), tags.get(0));
     }
 
     @Test
     void tokenizeTagWithSpaces() {
-        Stack<HtmlTag> tags = parse(
+        StaticList<HtmlTag> tags = parse(
                 """
                 <html\f\r
                 \s\s\s>
@@ -79,38 +79,39 @@ class HtmlLexerTest {
                 \s\s\s>
                 """);
 
-        assertEquals(HtmlTag.close("html"), tags.pop());
-        assertEquals(HtmlTag.open("html"), tags.pop());
+        assertTags(tags, HtmlTag.open("html"), HtmlTag.close("html"));
+    }
+
+    private void assertTags(StaticList<HtmlTag> tags, HtmlTag... expectedTags) {
+        for (int i = 0; i < expectedTags.length; i++)
+            assertEquals(expectedTags[i], tags.get(i));
     }
 
     @Test
     void tokenizeSelfClosingTags() {
-        Stack<HtmlTag> tags = parse(
+        StaticList<HtmlTag> tags = parse(
                 """
                 <hr\r\r\t
                 \s\s\s\f/>
                 <img/>
                 """);
 
-        assertEquals(HtmlTag.open("img"), tags.pop());
-        assertEquals(HtmlTag.open("hr"), tags.pop());
+        assertTags(tags, HtmlTag.open("hr"), HtmlTag.open("img"));
     }
 
     @Test
     void tokenizeTagWithAttribute() {
-        Stack<HtmlTag> tags = parse(
+        StaticList<HtmlTag> tags = parse(
                 "<a   \nhref=\"https://www.google.com\">" +
                 "<img        src=\"https://www.google.com/logo.png\"/>" +
                 "<div   class=\"container\">");
 
-        assertEquals(HtmlTag.open("div"), tags.pop());
-        assertEquals(HtmlTag.open("img"), tags.pop());
-        assertEquals(HtmlTag.open("a"), tags.pop());
+        assertTags(tags, HtmlTag.open("a"), HtmlTag.open("img"), HtmlTag.open("div"));
     }
 
     @Test
     void tokenizeHtmlStructure() {
-        Stack<HtmlTag> tags = parse("""
+        StaticList<HtmlTag> tags = parse("""
                 <html>
                 <body>
                 <h1>
@@ -123,19 +124,20 @@ class HtmlLexerTest {
                 </html>
                 """);
 
-        assertEquals(HtmlTag.close("html"), tags.pop());
-        assertEquals(HtmlTag.close("body"), tags.pop());
-        assertEquals(HtmlTag.close("p"), tags.pop());
-        assertEquals(HtmlTag.open("p"), tags.pop());
-        assertEquals(HtmlTag.close("h1"), tags.pop());
-        assertEquals(HtmlTag.open("h1"), tags.pop());
-        assertEquals(HtmlTag.open("body"), tags.pop());
-        assertEquals(HtmlTag.open("html"), tags.pop());
+        assertTags(tags,
+                HtmlTag.open("html"),
+                HtmlTag.open("body"),
+                HtmlTag.open("h1"),
+                HtmlTag.close("h1"),
+                HtmlTag.open("p"),
+                HtmlTag.close("p"),
+                HtmlTag.close("body"),
+                HtmlTag.close("html"));
     }
 
     @Test
     void tokenizeUpperCaseTagsToLowerCaseOnes() {
-        Stack<HtmlTag> tags = parse(
+        StaticList<HtmlTag> tags = parse(
                 """
                 <HTML>
                 <BODY>
@@ -149,17 +151,18 @@ class HtmlLexerTest {
                 </HTML>
                 """);
 
-        assertEquals(HtmlTag.close("html"), tags.pop());
-        assertEquals(HtmlTag.close("body"), tags.pop());
-        assertEquals(HtmlTag.close("p"), tags.pop());
-        assertEquals(HtmlTag.open("p"), tags.pop());
-        assertEquals(HtmlTag.close("h1"), tags.pop());
-        assertEquals(HtmlTag.open("h1"), tags.pop());
-        assertEquals(HtmlTag.open("body"), tags.pop());
-        assertEquals(HtmlTag.open("html"), tags.pop());
+        assertTags(tags,
+                HtmlTag.open("html"),
+                HtmlTag.open("body"),
+                HtmlTag.open("h1"),
+                HtmlTag.close("h1"),
+                HtmlTag.open("p"),
+                HtmlTag.close("p"),
+                HtmlTag.close("body"),
+                HtmlTag.close("html"));
     }
 
-    private Stack<HtmlTag> parse(final String input) {
+    private StaticList<HtmlTag> parse(final String input) {
         return new HtmlLexer(input).tokenize();
     }
 }

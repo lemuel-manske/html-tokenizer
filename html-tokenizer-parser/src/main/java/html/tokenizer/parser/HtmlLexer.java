@@ -1,7 +1,6 @@
 package html.tokenizer.parser;
 
-import stack.ListStack;
-import stack.Stack;
+import list.StaticList;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,15 +29,15 @@ public final class HtmlLexer {
         this.htmlInput = HTML_TAG.matcher(input);
     }
 
-    public Stack<HtmlTag> tokenize() {
-        Stack<HtmlTag> tags = new ListStack<>();
+    public StaticList<HtmlTag> tokenize() {
+        final StaticList<HtmlTag> tags = new StaticList<>(htmlInput.groupCount());
 
         while (htmlInput.find()) {
             if (isOpenTag())
-                tags.push(HtmlTag.open(tagName()));
+                tags.add(HtmlTag.open(tagName()));
 
             else if (isCloseTag())
-                tags.push(HtmlTag.close(tagName()));
+                tags.add(HtmlTag.close(tagName()));
         }
 
         return tags;

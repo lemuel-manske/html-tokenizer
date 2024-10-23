@@ -10,7 +10,8 @@ package html.tokenizer.parser;
  */
 public final class HtmlTag {
 
-    public static final String PRINT_FORMAT = "[ isClosingTag=%b , tagName=%s ]";
+    public static final String OPEN_TAG = "<%s>";
+    private static final String CLOSE_TAG = "</%s>";
 
     private final String tagName;
     private final boolean isClosingTag;
@@ -38,7 +39,7 @@ public final class HtmlTag {
 
     @Override
     public String toString() {
-        return PRINT_FORMAT.formatted(isClosingTag, tagName);
+        return isClosingTag ? OPEN_TAG.formatted(tagName) : CLOSE_TAG.formatted(tagName);
     }
 
     @Override

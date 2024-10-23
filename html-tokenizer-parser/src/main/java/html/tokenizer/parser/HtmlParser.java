@@ -1,5 +1,6 @@
 package html.tokenizer.parser;
 
+import list.StaticList;
 import stack.ListStack;
 import stack.Stack;
 
@@ -29,12 +30,12 @@ public final class HtmlParser {
     public HtmlReport parse() throws MissingCloseTag, UnexpectedCloseTag {
         HtmlReport htmlHtmlReport = new HtmlReport();
 
-        Stack<HtmlTag> allTags = lexer.tokenize();
+        StaticList<HtmlTag> allTags = lexer.tokenize();
 
         Stack<HtmlTag> closingTags = new ListStack<>();
 
-        while (!allTags.isEmpty()) {
-            HtmlTag currTag = allTags.pop();
+        for (int i = allTags.size() - 1; i >= 0; i--) {
+            HtmlTag currTag = allTags.get(i);
 
             if (currTag.isClosingTag()) {
                 closingTags.push(currTag); continue;
