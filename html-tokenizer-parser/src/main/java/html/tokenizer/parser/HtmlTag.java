@@ -8,7 +8,7 @@ package html.tokenizer.parser;
  * @see HtmlLexer
  * @see HtmlParser
  */
-public final class HtmlTag {
+public final class HtmlTag implements Comparable<HtmlTag> {
 
     public static final String OPEN_TAG = "<%s>";
     private static final String CLOSE_TAG = "</%s>";
@@ -48,5 +48,11 @@ public final class HtmlTag {
         if (obj == null || getClass() != obj.getClass()) return false;
         HtmlTag htmlTag = (HtmlTag) obj;
         return isClosingTag == htmlTag.isClosingTag && tagName.equals(htmlTag.tagName);
+    }
+
+    @Override
+    public int compareTo(HtmlTag o) {
+        if (o == null) return 1;
+        return tagName.compareTo(o.tagName);
     }
 }

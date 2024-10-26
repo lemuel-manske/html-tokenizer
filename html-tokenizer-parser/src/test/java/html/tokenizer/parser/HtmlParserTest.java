@@ -1,24 +1,17 @@
 package html.tokenizer.parser;
 
 import org.junit.jupiter.api.Test;
+import sort.QuickSort;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class HtmlParserTest {
 
     @Test
     void givenEmptyInputDoNothing() {
         assertDoesNotThrow(() -> parse(""));
-    }
-
-    @Test
-    void givenEmptyInputThenReportIsEmpty() throws UnexpectedCloseTag, MissingCloseTag {
-        HtmlReport htmlReport = parse("");
-
-        assertTrue(htmlReport.isEmpty());
     }
 
     @Test
@@ -138,6 +131,29 @@ class HtmlParserTest {
         assertEquals(1, htmlHtmlReport.getTagCount("body"));
         assertEquals(1, htmlHtmlReport.getTagCount("h1"));
         assertEquals(2, htmlHtmlReport.getTagCount("p"));
+    }
+
+    @Test
+    void givenValidHtmlThenGenerateReportWithAllTags() throws UnexpectedCloseTag, MissingCloseTag {
+        String html =
+                """
+                <html>
+                <head>
+                </head>
+                </html>
+                """;
+
+        HtmlReport htmlHtmlReport = parse(html);
+
+        HtmlReport.TagOccurrence[] tags = htmlHtmlReport.getTags(new QuickSort<>());
+
+        assertEquals(2, tags.length);
+
+        assertEquals("head", tags[0].getTag());
+        assertEquals(1, tags[0].getOccurrences());
+
+        assertEquals("html", tags[1].getTag());
+        assertEquals(1, tags[1].getOccurrences());
     }
 
     private HtmlReport parse(final String html) throws UnexpectedCloseTag, MissingCloseTag {

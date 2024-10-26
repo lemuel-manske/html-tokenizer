@@ -4,7 +4,6 @@ import html.tokenizer.parser.HtmlParser;
 import html.tokenizer.parser.HtmlReport;
 import html.tokenizer.parser.MissingCloseTag;
 import html.tokenizer.parser.UnexpectedCloseTag;
-import html.tokenizer.view.model.TagOccurrence;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,12 +16,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
+import sort.QuickSort;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Map;
+import java.util.Arrays;
 
 public class AppController {
 
@@ -30,11 +30,11 @@ public class AppController {
     @FXML private TextField chosenFile;
     @FXML private Button runParser;
     @FXML private TextArea parsingOutput;
-    @FXML private TableView<TagOccurrence> tags;
-    @FXML private TableColumn<TagOccurrence, String> tagId;
-    @FXML private TableColumn<TagOccurrence, Integer> tagOccurrences;
+    @FXML private TableView<HtmlReport.TagOccurrence> tags;
+    @FXML private TableColumn<HtmlReport.TagOccurrence, String> tagId;
+    @FXML private TableColumn<HtmlReport.TagOccurrence, Integer> tagOccurrences;
 
-    private final ObservableList<TagOccurrence> tagsList = FXCollections.observableArrayList();
+    private final ObservableList<HtmlReport.TagOccurrence> tagsList = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
@@ -89,8 +89,7 @@ public class AppController {
 
             tagsList.clear();
 
-            for (Map.Entry<String, Integer> tag : htmlReport.entries().entrySet())
-                tagsList.add(TagOccurrence.fromMapEntry(tag));
+            tagsList.addAll(htmlReport.getTags(new QuickSort<>()));
 
             tags.setItems(tagsList);
 

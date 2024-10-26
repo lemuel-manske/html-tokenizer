@@ -28,9 +28,9 @@ public final class HtmlParser {
     }
 
     public HtmlReport parse() throws MissingCloseTag, UnexpectedCloseTag {
-        HtmlReport htmlHtmlReport = new HtmlReport();
-
         StaticList<HtmlTag> allTags = lexer.tokenize();
+
+        HtmlReport htmlReport = new HtmlReport();
 
         Stack<HtmlTag> closingTags = new ListStack<>();
 
@@ -51,9 +51,9 @@ public final class HtmlParser {
             if (!currTag.tagName().equals(closingTag.tagName()))
                 throw new UnexpectedCloseTag(closingTag, expectedTag);
 
-            htmlHtmlReport.incrementTagCount(currTag.tagName());
+            htmlReport.incrementOrAdd(currTag.tagName());
         }
 
-        return htmlHtmlReport;
+        return htmlReport;
     }
 }

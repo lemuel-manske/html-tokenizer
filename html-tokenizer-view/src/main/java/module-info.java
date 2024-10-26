@@ -5,6 +5,8 @@ module html.tokenizer.view {
 
     requires html.tokenizer.parser;
 
+    requires sort;
+
     opens html.tokenizer.view to javafx.fxml;
 
     exports html.tokenizer.view;

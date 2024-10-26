@@ -32,6 +32,18 @@
         </dependency>
 
         <dependency>
+            <groupId>sort</groupId>
+            <artifactId>sort</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>map</groupId>
+            <artifactId>map</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>${junit.api.version}</version>

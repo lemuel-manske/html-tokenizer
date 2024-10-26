@@ -1,7 +1,8 @@
 package html.tokenizer.parser;
 
-import java.util.HashMap;
-import java.util.Map;
+import list.LinkedList;
+import sort.Sortable;
+
 import java.util.Optional;
 
 /**
@@ -11,25 +12,84 @@ import java.util.Optional;
  */
 public final class HtmlReport {
 
-    private final Map<String, Integer> entries; // TODO: use implementation from `data-structures`
+    private final LinkedList<TagOccurrence> tagOccurrences;
 
     public HtmlReport() {
-        this.entries = new HashMap<>();
+        this.tagOccurrences = new LinkedList<>();
     }
 
-    public void incrementTagCount(final String tagName) {
-        entries.merge(tagName, 1, Integer::sum);
+    public void incrementOrAdd(final String tagName) {
+        findTagOccurrenceByTagName(tagName)
+                .ifPresentOrElse(TagOccurrence::inc, () -> addTag(tagName));
     }
 
     public int getTagCount(final String tagToFind) {
-        return Optional.ofNullable(entries.get(tagToFind)).orElse(0);
+        return findTagOccurrenceByTagName(tagToFind)
+                .map(TagOccurrence::getOccurrences)
+                .orElse(0);
     }
 
-    public boolean isEmpty() {
-        return entries.isEmpty();
+    public TagOccurrence[] getTags(final Sortable<TagOccurrence> sortStrategy) {
+        TagOccurrence[] tags = new TagOccurrence[tagOccurrences.size()];
+
+        int i = 0;
+
+        for (LinkedList.Node<TagOccurrence> node = tagOccurrences.getByIndex(i); node != null; node = node.next())
+            tags[i++] = node.value();
+
+        return sortStrategy.sort(tags);
     }
 
-    public Map<String, Integer> entries() {
-        return entries;
+    private void addTag(String tagName) {
+        tagOccurrences.add(new TagOccurrence(tagName, 1));
+    }
+
+    private Optional<TagOccurrence> findTagOccurrenceByTagName(final String tagName) {
+        TagOccurrence tagOccurrenceToFind = new TagOccurrence(tagName);
+
+        return Optional
+                .ofNullable(tagOccurrences.getByValue(tagOccurrenceToFind))
+                .map(LinkedList.Node::value);
+    }
+
+    public static class TagOccurrence implements Comparable<TagOccurrence> {
+
+        private final String tag;
+        private Integer occurrences;
+
+        private TagOccurrence(final String tag) {
+            this.tag = tag;
+        }
+
+        private TagOccurrence(final String tag, final Integer occurrences) {
+            this.tag = tag;
+            this.occurrences = occurrences;
+        }
+
+        public String getTag() {
+            return tag;
+        }
+
+        public Integer getOccurrences() {
+            return occurrences;
+        }
+
+        protected void inc() {
+            occurrences++;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null || getClass() != obj.getClass()) return false;
+            TagOccurrence that = (TagOccurrence) obj;
+            return tag.equals(that.tag);
+        }
+
+        @Override
+        public int compareTo(TagOccurrence o) {
+            if (o == null) return 1;
+            return tag.compareTo(o.tag);
+        }
     }
 }
