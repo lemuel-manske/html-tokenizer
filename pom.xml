@@ -35,12 +35,6 @@
             <version>${junit.api.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>sort</groupId>
-            <artifactId>sort</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
     <build>

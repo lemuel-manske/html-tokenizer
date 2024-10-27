@@ -1,6 +1,7 @@
 package html.tokenizer.parser;
 
 import list.LinkedList;
+import sort.QuickSort;
 import sort.Sortable;
 
 import java.util.Optional;
@@ -29,6 +30,10 @@ public final class HtmlReport {
         return findTagOccurrenceByTagName(tagToFind.toLowerCase())
                 .map(TagOccurrence::getOccurrences)
                 .orElse(0);
+    }
+
+    public TagOccurrence[] getSortedTags() {
+        return getSortedTags(new QuickSort<>());
     }
 
     /**
