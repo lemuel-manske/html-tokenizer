@@ -41,8 +41,12 @@ public final class HtmlReport {
 
         int i = 0;
 
-        for (LinkedList.Node<TagOccurrence> node = tagOccurrences.getByIndex(i); node != null; node = node.next())
-            tags[i++] = node.value();
+        LinkedList.Node<TagOccurrence> firstNode = tagOccurrences.getByIndex(i);
+
+        while (firstNode != null) {
+            tags[i++] = firstNode.value();
+            firstNode = firstNode.next();
+        }
 
         return sortStrategy.sort(tags);
     }
@@ -60,6 +64,8 @@ public final class HtmlReport {
     }
 
     public static class TagOccurrence implements Comparable<TagOccurrence> {
+
+        private static final String PRINT_FORMAT = "[ %s: %d ]";
 
         private final String tag;
         private Integer occurrences;
@@ -97,6 +103,11 @@ public final class HtmlReport {
         public int compareTo(TagOccurrence o) {
             if (o == null) return 1;
             return tag.compareTo(o.tag);
+        }
+
+        @Override
+        public String toString() {
+            return PRINT_FORMAT.formatted(tag, occurrences);
         }
     }
 }
