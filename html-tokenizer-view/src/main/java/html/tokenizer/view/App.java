@@ -19,7 +19,7 @@ public class App extends Application {
 
         Scene scene = new Scene(app, VIEW_WIDTH, VIEW_HEIGHT);
 
-        stage.setTitle(Messages.APP_NAME);
+        stage.setTitle(View.APP_NAME);
         stage.setScene(scene);
         stage.show();
     }

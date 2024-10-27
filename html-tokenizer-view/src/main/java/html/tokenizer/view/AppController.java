@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Arrays;
 
 public class AppController {
 
@@ -38,11 +37,11 @@ public class AppController {
 
     @FXML
     public void initialize() {
-        openFileChooser.setText(Messages.SELECT_HTML_FILE);
-        chosenFile.setText(Messages.NO_FILE_SELECTED);
-        runParser.setText(Messages.RUN_PARSER);
-        tagId.setText(Messages.TAG_COLUMN);
-        tagOccurrences.setText(Messages.TAG_OCCURRENCES_COLUMN);
+        openFileChooser.setText(View.SELECT_HTML_FILE);
+        chosenFile.setText(View.NO_FILE_SELECTED);
+        runParser.setText(View.RUN_PARSER);
+        tagId.setText(View.TAG_COLUMN);
+        tagOccurrences.setText(View.TAG_OCCURRENCES_COLUMN);
 
         DoubleBinding size = tags.widthProperty().divide(2);
         tagId.prefWidthProperty().bind(size);
@@ -55,13 +54,13 @@ public class AppController {
     @FXML
     public void selectHtmlFile() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle(Messages.SELECT_HTML_FILE);
+        fileChooser.setTitle(View.SELECT_HTML_FILE);
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("HTML Files", "*.html"));
 
         File file = fileChooser.showOpenDialog(openFileChooser.getScene().getWindow());
 
         if (file == null) {
-            chosenFile.setText(Messages.NO_FILE_SELECTED);
+            chosenFile.setText(View.NO_FILE_SELECTED);
             return;
         }
 
@@ -73,37 +72,47 @@ public class AppController {
         File htmlFile = new File(chosenFile.getText());
 
         if (!htmlFile.exists()) {
-            parsingOutput.setText(Messages.NO_FILE_SELECTED);
+            parsingOutput.setText(View.NO_FILE_SELECTED);
             return;
         }
 
         String fileContent = Files.readString(htmlFile.toPath(), StandardCharsets.UTF_8);
 
         if (fileContent.isEmpty()) {
-            parsingOutput.setText(Messages.FILE_HAS_NO_CONTENT);
+            parsingOutput.setText(View.FILE_HAS_NO_CONTENT);
             return;
         }
 
         try {
             HtmlReport htmlReport = new HtmlParser(fileContent).parse();
 
-            tagsList.clear();
-
-            tagsList.addAll(htmlReport.getTags(new QuickSort<>()));
-
-            tags.setItems(tagsList);
-
-            parsingOutput.setText(Messages.PARSING_SUCCESS);
+            updateTableWith(htmlReport);
         }
 
         catch (UnexpectedCloseTag e) {
-            parsingOutput.setText(Messages.UNEXPECTED_CLOSE_TAG.formatted(e.expectedTag(), e.unexpectedTag()));
+            String unexpectCloseTag = View.UNEXPECTED_CLOSE_TAG_WHEN_ANOTHER_WAS_EXPECTED.formatted(e.expectedTag(), e.unexpectedTag());
+
             tagsList.clear();
+
+            parsingOutput.setText(unexpectCloseTag);
         }
 
         catch (MissingCloseTag e) {
-            parsingOutput.setText(Messages.MISSING_CLOSE_TAG.formatted(e.missingTag()));
+            String missingCloseTag = View.MISSING_CLOSE_TAG.formatted(e.missingTag());
+
             tagsList.clear();
+
+            parsingOutput.setText(missingCloseTag);
         }
+    }
+
+    private void updateTableWith(HtmlReport htmlReport) {
+        tagsList.clear();
+
+        tagsList.addAll(htmlReport.getTags(new QuickSort<>()));
+
+        tags.setItems(tagsList);
+
+        parsingOutput.setText(View.PARSING_SUCCESS);
     }
 }
