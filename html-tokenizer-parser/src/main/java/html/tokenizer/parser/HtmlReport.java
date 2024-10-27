@@ -31,6 +31,11 @@ public final class HtmlReport {
                 .orElse(0);
     }
 
+    /**
+     * Returns all tags found in the HTML, with their names and occurrences, sorted by the given strategy.
+     *
+     * @see Sortable
+     */
     public TagOccurrence[] getSortedTags(final Sortable<TagOccurrence> sortStrategy) {
         TagOccurrence[] tags = new TagOccurrence[tagOccurrences.size()];
 
