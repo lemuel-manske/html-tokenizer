@@ -1,6 +1,8 @@
 package html.tokenizer.parser;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,6 +13,30 @@ class HtmlParserTest {
     @Test
     void givenEmptyInputDoNothing() {
         assertDoesNotThrow(() -> parse(""));
+    }
+
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "meta",
+            "base",
+            "br",
+            "col",
+            "command",
+            "embed",
+            "hr",
+            "img",
+            "input",
+            "link",
+            "param",
+            "source",
+            "!DOCTYPE",
+            "!doctype"
+    })
+    void givenSelfClosingTagsThenDoNotThrowMissingEndTag(final String selfClosingTag) throws MissingEndTag, UnexpectedEndTag {
+        HtmlReport report = parse("<%s>".formatted(selfClosingTag));
+
+        assertEquals(1, report.getTagCount(selfClosingTag));
     }
 
     @Test
@@ -57,8 +83,10 @@ class HtmlParserTest {
     void givenValidHtmlThenGenerateReport() throws UnexpectedEndTag, MissingEndTag {
         String html =
                 """
+                <!DOCTYPE html>
                 <html>
                 <head>
+                    <meta charset="UTF-8">
                     <title>Test</title>
                 </head>
                 <body class="main">
@@ -80,6 +108,8 @@ class HtmlParserTest {
         assertEquals(1, htmlHtmlReport.getTagCount("h1"));
         assertEquals(2, htmlHtmlReport.getTagCount("a"));
         assertEquals(2, htmlHtmlReport.getTagCount("p"));
+        assertEquals(1, htmlHtmlReport.getTagCount("meta"));
+        assertEquals(1, htmlHtmlReport.getTagCount("!DOCTYPE"));
     }
 
     private HtmlReport parse(final String html) throws UnexpectedEndTag, MissingEndTag {

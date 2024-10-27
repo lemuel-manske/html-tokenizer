@@ -14,7 +14,7 @@ public final class HtmlTag implements Comparable<HtmlTag> {
     private static final String END_TAG = "</%s>";
 
     private final String tagName;
-    private final boolean isClosingTag;
+    private final boolean isEndTag;
 
     public static HtmlTag startTag(final String tagName) {
         return new HtmlTag(tagName, false);
@@ -24,22 +24,22 @@ public final class HtmlTag implements Comparable<HtmlTag> {
         return new HtmlTag(tagName, true);
     }
 
-    private HtmlTag(final String tagName, final boolean isClosingTag) {
+    private HtmlTag(final String tagName, final boolean isEndTag) {
         this.tagName = tagName;
-        this.isClosingTag = isClosingTag;
+        this.isEndTag = isEndTag;
     }
 
     public String tagName() {
         return tagName;
     }
 
-    public boolean isClosingTag() {
-        return isClosingTag;
+    public boolean isEndTag() {
+        return isEndTag;
     }
 
     @Override
     public String toString() {
-        return isClosingTag ? START_TAG.formatted(tagName) : END_TAG.formatted(tagName);
+        return isEndTag ? END_TAG.formatted(tagName) : START_TAG.formatted(tagName);
     }
 
     @Override
@@ -47,7 +47,7 @@ public final class HtmlTag implements Comparable<HtmlTag> {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         HtmlTag htmlTag = (HtmlTag) obj;
-        return isClosingTag == htmlTag.isClosingTag && tagName.equals(htmlTag.tagName);
+        return isEndTag == htmlTag.isEndTag && tagName.equals(htmlTag.tagName);
     }
 
     @Override

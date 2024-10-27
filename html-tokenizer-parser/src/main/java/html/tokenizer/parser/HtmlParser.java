@@ -25,6 +25,7 @@ public final class HtmlParser {
 
     public HtmlParser(final String input) {
         this.lexer = new HtmlLexer(input);
+
     }
 
     public HtmlReport parse() throws MissingEndTag, UnexpectedEndTag {
@@ -37,8 +38,12 @@ public final class HtmlParser {
         for (int i = allTags.size() - 1; i >= 0; i--) {
             HtmlTag currTag = allTags.get(i);
 
-            if (currTag.isClosingTag()) {
+            if (currTag.isEndTag()) {
                 closingTags.push(currTag); continue;
+            }
+
+            if (isSelfClosingTag(currTag)) {
+                htmlReport.put(currTag.tagName()); continue;
             }
 
             HtmlTag expectedTag = HtmlTag.endTag(currTag.tagName());
@@ -55,5 +60,9 @@ public final class HtmlParser {
         }
 
         return htmlReport;
+    }
+
+    private boolean isSelfClosingTag(HtmlTag tag) {
+        return SelfClosingTags.contains(tag.tagName());
     }
 }

@@ -104,6 +104,17 @@ class HtmlLexerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
+            "<!doctype html>",
+            "<!DOCTYPE html>",
+    })
+    void shouldRecognizeDoctype(final String docType) {
+        HtmlTag expectedTag = HtmlTag.startTag("!doctype");
+
+        assertEquals(expectedTag, parse(docType).get(0));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
             "html",
             "html   ",
             "html1",

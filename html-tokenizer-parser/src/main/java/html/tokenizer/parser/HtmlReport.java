@@ -20,13 +20,13 @@ public final class HtmlReport {
         this.tagOccurrences = new LinkedList<>();
     }
 
-    public void put(final String tagName) {
+    void put(final String tagName) {
         findTagOccurrenceByTagName(tagName)
                 .ifPresentOrElse(TagOccurrence::inc, () -> addTag(tagName));
     }
 
     public int getTagCount(final String tagToFind) {
-        return findTagOccurrenceByTagName(tagToFind)
+        return findTagOccurrenceByTagName(tagToFind.toLowerCase())
                 .map(TagOccurrence::getOccurrences)
                 .orElse(0);
     }
