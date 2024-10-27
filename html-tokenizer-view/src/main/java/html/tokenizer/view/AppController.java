@@ -2,8 +2,8 @@ package html.tokenizer.view;
 
 import html.tokenizer.parser.HtmlParser;
 import html.tokenizer.parser.HtmlReport;
-import html.tokenizer.parser.MissingCloseTag;
-import html.tokenizer.parser.UnexpectedCloseTag;
+import html.tokenizer.parser.MissingEndTag;
+import html.tokenizer.parser.UnexpectedEndTag;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -89,27 +89,27 @@ public class AppController {
             updateTableWith(htmlReport);
         }
 
-        catch (UnexpectedCloseTag e) {
-            String unexpectCloseTag = View.UNEXPECTED_CLOSE_TAG_WHEN_ANOTHER_WAS_EXPECTED.formatted(e.expectedTag(), e.unexpectedTag());
+        catch (UnexpectedEndTag e) {
+            String unexpectEndTag = View.UNEXPECTED_END_TAG_WHEN_ANOTHER_WAS_EXPECTED.formatted(e.expectedTag(), e.unexpectedTag());
 
             tagsList.clear();
 
-            parsingOutput.setText(unexpectCloseTag);
+            parsingOutput.setText(unexpectEndTag);
         }
 
-        catch (MissingCloseTag e) {
-            String missingCloseTag = View.MISSING_CLOSE_TAG.formatted(e.missingTag());
+        catch (MissingEndTag e) {
+            String missingEndTag = View.MISSING_END_TAG.formatted(e.missingTag());
 
             tagsList.clear();
 
-            parsingOutput.setText(missingCloseTag);
+            parsingOutput.setText(missingEndTag);
         }
     }
 
     private void updateTableWith(HtmlReport htmlReport) {
         tagsList.clear();
 
-        tagsList.addAll(htmlReport.getTags(new QuickSort<>()));
+        tagsList.addAll(htmlReport.getSortedTags(new QuickSort<>()));
 
         tags.setItems(tagsList);
 

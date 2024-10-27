@@ -8,7 +8,9 @@ import java.util.Optional;
 /**
  * Represents a report of {@link HtmlParser parser} execution.
  *
- * <p>Has a list of all tags found in the HTML, with their names and count.
+ * <p>Has a list of all tags found in the HTML, with their names and its occurrences.
+ *
+ * @see HtmlParser
  */
 public final class HtmlReport {
 
@@ -18,7 +20,7 @@ public final class HtmlReport {
         this.tagOccurrences = new LinkedList<>();
     }
 
-    public void incrementOrAdd(final String tagName) {
+    public void put(final String tagName) {
         findTagOccurrenceByTagName(tagName)
                 .ifPresentOrElse(TagOccurrence::inc, () -> addTag(tagName));
     }
@@ -29,7 +31,7 @@ public final class HtmlReport {
                 .orElse(0);
     }
 
-    public TagOccurrence[] getTags(final Sortable<TagOccurrence> sortStrategy) {
+    public TagOccurrence[] getSortedTags(final Sortable<TagOccurrence> sortStrategy) {
         TagOccurrence[] tags = new TagOccurrence[tagOccurrences.size()];
 
         int i = 0;

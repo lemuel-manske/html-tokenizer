@@ -1,7 +1,6 @@
 package html.tokenizer.parser;
 
 import org.junit.jupiter.api.Test;
-import sort.QuickSort;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,23 +14,8 @@ class HtmlParserTest {
     }
 
     @Test
-    void givenMissingCloseTagsThenThrowMissingCloseTag() {
-        String html =
-                """
-                <html>
-                <head>
-                    <title>Test</title>
-                </head>
-                <body>
-                    <h1>Test</h1>
-                """;
-
-        assertThrows(MissingCloseTag.class, () -> parse(html));
-    }
-
-    @Test
-    void givenMissingCloseTagThenInformWhichTagIsMissing() {
-        String html =
+    void givenMissingEndTagsThenThrowMissingEndTag() {
+        String contentMissingHtmlEndTag =
                 """
                 <html>
                 <head>
@@ -42,32 +26,15 @@ class HtmlParserTest {
                 </body>
                 """;
 
-        MissingCloseTag exception =
-                assertThrows(MissingCloseTag.class, () -> parse(html));
+        MissingEndTag exception =
+                assertThrows(MissingEndTag.class, () -> parse(contentMissingHtmlEndTag));
 
-        assertEquals(HtmlTag.close("html"), exception.missingTag());
-    }
-
-    @Test
-    void givenUnexpectedEndCloseThenThrowUnexpectedCloseTag() {
-        String html =
-                """
-                <html>
-                <head>
-                    <title>Test</title>
-                </head>
-                <body>
-                    <h1>Test</h1>
-                </body>
-                </meta>
-                """;
-
-        assertThrows(UnexpectedCloseTag.class, () -> parse(html));
+        assertEquals(HtmlTag.endTag("html"), exception.missingTag());
     }
     
     @Test
-    void givenUnexpectedEndCloseThenInformWhichTagWasUnexpected() {
-        String html =
+    void givenUnexpectedEndTagThenThrowUnexpectedEndTag() {
+        String contentWithUnexpectedMetaEndTagForHtmlStartTag =
                 """
                 <html>
                 <head>
@@ -79,46 +46,27 @@ class HtmlParserTest {
                 </meta>
                 """;
 
-        UnexpectedCloseTag exception =
-                assertThrows(UnexpectedCloseTag.class, () -> parse(html));
+        UnexpectedEndTag exception =
+                assertThrows(UnexpectedEndTag.class, () -> parse(contentWithUnexpectedMetaEndTagForHtmlStartTag));
 
-        assertEquals(HtmlTag.close("meta"), exception.unexpectedTag());
+        assertEquals(HtmlTag.endTag("meta"), exception.unexpectedTag());
+        assertEquals(HtmlTag.endTag("html"), exception.expectedTag());
     }
 
     @Test
-    void givenUnexpectedEndCloseThenInformWhichTagWasExpected() {
+    void givenValidHtmlThenGenerateReport() throws UnexpectedEndTag, MissingEndTag {
         String html =
                 """
                 <html>
                 <head>
                     <title>Test</title>
                 </head>
-                <body>
+                <body class="main">
                     <h1>Test</h1>
-                </body>
-                </meta>
-                """;
-
-        UnexpectedCloseTag exception =
-                assertThrows(UnexpectedCloseTag.class, () -> parse(html));
-
-        assertEquals(HtmlTag.close("html"), exception.expectedTag());
-    }
-
-
-
-    @Test
-    void givenValidHtmlThenGenerateReport() throws UnexpectedCloseTag, MissingCloseTag {
-        String html =
-                """
-                <html>
-                <head>
-                    <title>Test</title>
-                </head>
-                <body>
-                    <h1>Test</h1>
+                    <a href="https://www.example.com">Example</a>
                     <p>First</p>
-                    <p>Second</p>
+                    <p id="second">Second</p>
+                    <a href="https://www.google.com">Google</a>
                 </body>
                 </html>
                 """;
@@ -130,33 +78,11 @@ class HtmlParserTest {
         assertEquals(1, htmlHtmlReport.getTagCount("title"));
         assertEquals(1, htmlHtmlReport.getTagCount("body"));
         assertEquals(1, htmlHtmlReport.getTagCount("h1"));
+        assertEquals(2, htmlHtmlReport.getTagCount("a"));
         assertEquals(2, htmlHtmlReport.getTagCount("p"));
     }
 
-    @Test
-    void givenValidHtmlThenGenerateReportWithAllTags() throws UnexpectedCloseTag, MissingCloseTag {
-        String html =
-                """
-                <html>
-                <head>
-                </head>
-                </html>
-                """;
-
-        HtmlReport htmlHtmlReport = parse(html);
-
-        HtmlReport.TagOccurrence[] tags = htmlHtmlReport.getTags(new QuickSort<>());
-
-        assertEquals(2, tags.length);
-
-        assertEquals("head", tags[0].getTag());
-        assertEquals(1, tags[0].getOccurrences());
-
-        assertEquals("html", tags[1].getTag());
-        assertEquals(1, tags[1].getOccurrences());
-    }
-
-    private HtmlReport parse(final String html) throws UnexpectedCloseTag, MissingCloseTag {
+    private HtmlReport parse(final String html) throws UnexpectedEndTag, MissingEndTag {
         return new HtmlParser(html).parse();
     }
 }

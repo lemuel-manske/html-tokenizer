@@ -3,24 +3,24 @@ package html.tokenizer.parser;
 /**
  * Represents an HTML tag.
  *
- * <p>It can be an open tag, a self-closing tag or a closing tag.
+ * <p>It can be an open tag or a closing tag (self-closing tags are considered open tags).
  *
  * @see HtmlLexer
  * @see HtmlParser
  */
 public final class HtmlTag implements Comparable<HtmlTag> {
 
-    public static final String OPEN_TAG = "<%s>";
-    private static final String CLOSE_TAG = "</%s>";
+    public static final String START_TAG = "<%s>";
+    private static final String END_TAG = "</%s>";
 
     private final String tagName;
     private final boolean isClosingTag;
 
-    public static HtmlTag open(final String tagName) {
+    public static HtmlTag startTag(final String tagName) {
         return new HtmlTag(tagName, false);
     }
 
-    public static HtmlTag close(final String tagName) {
+    public static HtmlTag endTag(final String tagName) {
         return new HtmlTag(tagName, true);
     }
 
@@ -39,7 +39,7 @@ public final class HtmlTag implements Comparable<HtmlTag> {
 
     @Override
     public String toString() {
-        return isClosingTag ? OPEN_TAG.formatted(tagName) : CLOSE_TAG.formatted(tagName);
+        return isClosingTag ? START_TAG.formatted(tagName) : END_TAG.formatted(tagName);
     }
 
     @Override

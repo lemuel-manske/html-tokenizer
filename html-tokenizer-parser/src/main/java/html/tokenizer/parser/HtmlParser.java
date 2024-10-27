@@ -7,16 +7,16 @@ import stack.Stack;
 /**
  * Parses an HTML input and checks if all tags are correctly closed.
  *
- * <p>It uses a {@link HtmlLexer} to tokenize the input.
+ * <p>Uses a {@link HtmlLexer} to tokenize the input.
  *
- * <p>It throws a {@link MissingCloseTag} if a tag is missing a closing tag, and
- * a {@link UnexpectedCloseTag} if a closing tag is unexpected.
+ * <p>Throws a {@link MissingEndTag} if a tag is missing a closing tag, and
+ * a {@link UnexpectedEndTag} if a closing tag is unexpected.
  *
- * <p>It returns a {@link HtmlReport} with all the tags that were correctly closed.
+ * <p>Returns a {@link HtmlReport} with all the tags that were correctly closed.
  *
  * @see HtmlLexer
- * @see MissingCloseTag
- * @see UnexpectedCloseTag
+ * @see MissingEndTag
+ * @see UnexpectedEndTag
  * @see HtmlReport
  */
 public final class HtmlParser {
@@ -27,7 +27,7 @@ public final class HtmlParser {
         this.lexer = new HtmlLexer(input);
     }
 
-    public HtmlReport parse() throws MissingCloseTag, UnexpectedCloseTag {
+    public HtmlReport parse() throws MissingEndTag, UnexpectedEndTag {
         StaticList<HtmlTag> allTags = lexer.tokenize();
 
         HtmlReport htmlReport = new HtmlReport();
@@ -41,17 +41,17 @@ public final class HtmlParser {
                 closingTags.push(currTag); continue;
             }
 
-            HtmlTag expectedTag = HtmlTag.close(currTag.tagName());
+            HtmlTag expectedTag = HtmlTag.endTag(currTag.tagName());
 
             if (closingTags.isEmpty())
-                throw new MissingCloseTag(expectedTag);
+                throw new MissingEndTag(expectedTag);
 
             HtmlTag closingTag = closingTags.pop();
 
             if (!currTag.tagName().equals(closingTag.tagName()))
-                throw new UnexpectedCloseTag(closingTag, expectedTag);
+                throw new UnexpectedEndTag(closingTag, expectedTag);
 
-            htmlReport.incrementOrAdd(currTag.tagName());
+            htmlReport.put(currTag.tagName());
         }
 
         return htmlReport;
