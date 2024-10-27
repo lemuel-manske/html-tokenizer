@@ -90,7 +90,7 @@ public class AppController {
         }
 
         catch (UnexpectedEndTag e) {
-            String unexpectEndTag = View.UNEXPECTED_END_TAG_WHEN_ANOTHER_WAS_EXPECTED.formatted(e.expectedTag(), e.unexpectedTag());
+            String unexpectEndTag = View.UNEXPECTED_END_TAG_WHEN_ANOTHER_WAS_EXPECTED.formatted(e.unexpectedTag(), e.expectedTag());
 
             tagsList.clear();
 

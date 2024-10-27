@@ -39,7 +39,7 @@
                 fx:id="openFileChooser"
                 mnemonicParsing="false"
                 onAction="#selectHtmlFile"
-                prefWidth="100.0" />
+                prefWidth="140.0" />
 
         <TextField
                 fx:id="chosenFile"

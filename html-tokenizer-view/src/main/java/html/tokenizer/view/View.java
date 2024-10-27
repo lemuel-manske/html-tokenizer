@@ -5,17 +5,17 @@ public class View {
     public static final String APP_NAME = "HTML Tokenizer";
 
     // header messages
-    public static final String SELECT_HTML_FILE = "Find file";
-    public static final String RUN_PARSER = "Run";
+    public static final String SELECT_HTML_FILE = "Carregar arquivo";
+    public static final String RUN_PARSER = "Executar";
 
     // table headers
     public static final String TAG_COLUMN = "Tag";
-    public static final String TAG_OCCURRENCES_COLUMN = "Occurrences";
+    public static final String TAG_OCCURRENCES_COLUMN = "Ocorrências";
 
     // output messages
-    public static final String UNEXPECTED_END_TAG_WHEN_ANOTHER_WAS_EXPECTED = "Unexpected end tag %s when %s was expected.";
-    public static final String MISSING_END_TAG = "Missing end tag for %s.";
-    public static final String FILE_HAS_NO_CONTENT = "File has no content.";
-    public static final String NO_FILE_SELECTED = "No file selected.";
-    public static final String PARSING_SUCCESS = "File is nicely formatted.";
+    public static final String UNEXPECTED_END_TAG_WHEN_ANOTHER_WAS_EXPECTED = "Tag final %s inesperada quando %s era esperada.";
+    public static final String MISSING_END_TAG = "Tag final faltando %s.";
+    public static final String FILE_HAS_NO_CONTENT = "Arquivo não tem conteúdo.";
+    public static final String NO_FILE_SELECTED = "Nenhum arquivo selecionado.";
+    public static final String PARSING_SUCCESS = "Arquivo está bem formatado.";
 }
