@@ -106,6 +106,9 @@ class HtmlLexerTest {
     @ValueSource(strings = {
             "<!doctype html>",
             "<!DOCTYPE html>",
+            "<!doctype html   >",
+            "<!DOCTYPE html   >",
+            "<!DocTypE html>",
     })
     void shouldRecognizeDoctype(final String docType) {
         HtmlTag expectedTag = HtmlTag.startTag("!doctype");
