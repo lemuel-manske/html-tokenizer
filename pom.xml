@@ -19,6 +19,12 @@
     <properties>
         <jdk.version>17</jdk.version>
         <junit.api.version>5.11.2</junit.api.version>
+        <compiler.version>3.8.1</compiler.version>
+        <shade.version>3.2.4</shade.version>
+        <main.path>html.tokenizer.view.Launcher</main.path>
+
+        <maven.compiler.source>${jdk.version}</maven.compiler.source>
+        <maven.compiler.target>${jdk.version}</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -42,7 +48,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>${compiler.version}</version>
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
@@ -52,7 +58,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>${shade.version}</version>
 
                 <executions>
                     <execution>
@@ -64,7 +70,7 @@
                             <createDependencyReducedPom>true</createDependencyReducedPom>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>html.tokenizer.view.Main</mainClass>
+                                    <mainClass>${main.path}</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
