@@ -17,23 +17,23 @@ package html.tokenizer.parser;
  */
 public final class UnexpectedEndTag extends Exception {
 
-    public static final String MESSAGE = "Unexpected end tag %s when expecting %s";
+    private static final String MESSAGE = "Unexpected end tag %s when expecting %s";
 
     private final transient HtmlTag unexpectedTag;
     private final transient HtmlTag expectedTag;
 
     public UnexpectedEndTag(final HtmlTag unexpectedTag, final HtmlTag expectedTag) {
-        super(MESSAGE.formatted(unexpectedTag.tagName(), expectedTag.tagName()));
+        super(MESSAGE.formatted(unexpectedTag.getTagName(), expectedTag.getTagName()));
 
         this.unexpectedTag = unexpectedTag;
         this.expectedTag = expectedTag;
     }
 
-    public HtmlTag unexpectedTag() {
+    public HtmlTag getUnexpectedTag() {
         return unexpectedTag;
     }
 
-    public HtmlTag expectedTag() {
+    public HtmlTag getExpectedTag() {
         return expectedTag;
     }
 }

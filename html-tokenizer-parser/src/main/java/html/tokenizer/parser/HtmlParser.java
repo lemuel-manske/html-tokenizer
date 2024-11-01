@@ -21,6 +21,22 @@ import stack.Stack;
  */
 public final class HtmlParser {
 
+    private static final String[] SELF_CLOSING_TAGS = {
+            "meta",
+            "base",
+            "br",
+            "col",
+            "command",
+            "embed",
+            "hr",
+            "img",
+            "input",
+            "link",
+            "param",
+            "source",
+            "!doctype",
+    };
+
     private final HtmlLexer lexer;
 
     public HtmlParser(final String input) {
@@ -43,57 +59,30 @@ public final class HtmlParser {
             }
 
             if (isSelfClosingTag(currTag)) {
-                htmlReport.put(currTag.tagName()); continue;
+                htmlReport.put(currTag.getTagName()); continue;
             }
 
-            HtmlTag expectedTag = HtmlTag.endTag(currTag.tagName());
+            HtmlTag expectedTag = HtmlTag.endTag(currTag.getTagName());
 
             if (closingTags.isEmpty())
                 throw new MissingEndTag(expectedTag);
 
             HtmlTag closingTag = closingTags.pop();
 
-            if (!currTag.tagName().equals(closingTag.tagName()))
+            if (!currTag.getTagName().equals(closingTag.getTagName()))
                 throw new UnexpectedEndTag(closingTag, expectedTag);
 
-            htmlReport.put(currTag.tagName());
+            htmlReport.put(currTag.getTagName());
         }
 
         return htmlReport;
     }
 
     private boolean isSelfClosingTag(HtmlTag tag) {
-        return SelfClosingTags.contains(tag.tagName());
-    }
+        for (String s : SELF_CLOSING_TAGS)
+            if (tag.getTagName().equals(s))
+                return true;
 
-    private static class SelfClosingTags {
-
-        private static final String[] EXPECTED_SELF_CLOSING_TAGS = {
-                "meta",
-                "base",
-                "br",
-                "col",
-                "command",
-                "embed",
-                "hr",
-                "img",
-                "input",
-                "link",
-                "param",
-                "source",
-                "!doctype",
-        };
-
-        public static boolean contains(String tag) {
-            for (String s : EXPECTED_SELF_CLOSING_TAGS)
-                if (s.equals(tag))
-                    return true;
-
-            return false;
-        }
-
-        private SelfClosingTags() {
-            // static class
-        }
+        return false;
     }
 }

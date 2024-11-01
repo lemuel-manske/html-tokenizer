@@ -18,17 +18,17 @@ package html.tokenizer.parser;
  */
 public final class MissingEndTag extends Exception {
 
-    public static final String MESSAGE = "Missing end tag for open tag %s";
+    private static final String MESSAGE = "Missing end tag for open tag %s";
 
     private final transient HtmlTag missingTag;
 
     public MissingEndTag(final HtmlTag missingTag) {
-        super(MESSAGE.formatted(missingTag.tagName()));
+        super(MESSAGE.formatted(missingTag.getTagName()));
 
         this.missingTag = missingTag;
     }
 
-    public HtmlTag missingTag() {
+    public HtmlTag getMissingTag() {
         return missingTag;
     }
 }

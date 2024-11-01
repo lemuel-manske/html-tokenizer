@@ -1,7 +1,6 @@
 package html.tokenizer.parser;
 
 import list.LinkedList;
-import sort.QuickSort;
 import sort.Sortable;
 
 import java.util.Optional;
@@ -23,7 +22,7 @@ public final class HtmlReport {
 
     void put(final String tagName) {
         findTagOccurrenceByTagName(tagName)
-                .ifPresentOrElse(TagOccurrence::inc, () -> addTag(tagName));
+                .ifPresentOrElse(TagOccurrence::incrementTagOccurrence, () -> addTag(tagName));
     }
 
     public int getTagCount(final String tagToFind) {
@@ -32,16 +31,12 @@ public final class HtmlReport {
                 .orElse(0);
     }
 
-    public TagOccurrence[] getSortedTags() {
-        return getSortedTags(new QuickSort<>());
-    }
-
     /**
      * Returns all tags found in the HTML, with their names and occurrences, sorted by the given strategy.
      *
      * @see Sortable
      */
-    public TagOccurrence[] getSortedTags(final Sortable<TagOccurrence> sortStrategy) {
+    public TagOccurrence[] sortTagOccurrences(final Sortable<TagOccurrence> sortStrategy) {
         TagOccurrence[] tags = new TagOccurrence[tagOccurrences.size()];
 
         int i = 0;
@@ -49,15 +44,15 @@ public final class HtmlReport {
         LinkedList.Node<TagOccurrence> firstNode = tagOccurrences.getByIndex(i);
 
         while (firstNode != null) {
-            tags[i++] = firstNode.value();
-            firstNode = firstNode.next();
+            tags[i++] = firstNode.getValue();
+            firstNode = firstNode.getNextNode();
         }
 
         return sortStrategy.sort(tags);
     }
 
     private void addTag(String tagName) {
-        tagOccurrences.add(new TagOccurrence(tagName, 1));
+        tagOccurrences.add(new TagOccurrence(tagName));
     }
 
     private Optional<TagOccurrence> findTagOccurrenceByTagName(final String tagName) {
@@ -65,54 +60,6 @@ public final class HtmlReport {
 
         return Optional
                 .ofNullable(tagOccurrences.getByValue(tagOccurrenceToFind))
-                .map(LinkedList.Node::value);
-    }
-
-    public static class TagOccurrence implements Comparable<TagOccurrence> {
-
-        private static final String PRINT_FORMAT = "[ %s: %d ]";
-
-        private final String tag;
-        private Integer occurrences;
-
-        private TagOccurrence(final String tag) {
-            this.tag = tag;
-        }
-
-        private TagOccurrence(final String tag, final Integer occurrences) {
-            this.tag = tag;
-            this.occurrences = occurrences;
-        }
-
-        public String getTag() {
-            return tag;
-        }
-
-        public Integer getOccurrences() {
-            return occurrences;
-        }
-
-        protected void inc() {
-            occurrences++;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null || getClass() != obj.getClass()) return false;
-            TagOccurrence that = (TagOccurrence) obj;
-            return tag.equals(that.tag);
-        }
-
-        @Override
-        public int compareTo(TagOccurrence o) {
-            if (o == null) return 1;
-            return tag.compareTo(o.tag);
-        }
-
-        @Override
-        public String toString() {
-            return PRINT_FORMAT.formatted(tag, occurrences);
-        }
+                .map(LinkedList.Node::getValue);
     }
 }

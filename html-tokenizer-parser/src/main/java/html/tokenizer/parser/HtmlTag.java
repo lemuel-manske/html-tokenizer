@@ -10,11 +10,11 @@ package html.tokenizer.parser;
  */
 public final class HtmlTag implements Comparable<HtmlTag> {
 
-    public static final String START_TAG = "<%s>";
+    private static final String START_TAG = "<%s>";
     private static final String END_TAG = "</%s>";
 
     private final String tagName;
-    private final boolean isEndTag;
+    private final boolean endTag;
 
     public static HtmlTag startTag(final String tagName) {
         return new HtmlTag(tagName, false);
@@ -24,22 +24,22 @@ public final class HtmlTag implements Comparable<HtmlTag> {
         return new HtmlTag(tagName, true);
     }
 
-    private HtmlTag(final String tagName, final boolean isEndTag) {
+    private HtmlTag(final String tagName, final boolean endTag) {
         this.tagName = tagName;
-        this.isEndTag = isEndTag;
+        this.endTag = endTag;
     }
 
-    public String tagName() {
+    public String getTagName() {
         return tagName;
     }
 
     public boolean isEndTag() {
-        return isEndTag;
+        return endTag;
     }
 
     @Override
     public String toString() {
-        return isEndTag ? END_TAG.formatted(tagName) : START_TAG.formatted(tagName);
+        return endTag ? END_TAG.formatted(tagName) : START_TAG.formatted(tagName);
     }
 
     @Override
@@ -47,7 +47,7 @@ public final class HtmlTag implements Comparable<HtmlTag> {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         HtmlTag htmlTag = (HtmlTag) obj;
-        return isEndTag == htmlTag.isEndTag && tagName.equals(htmlTag.tagName);
+        return endTag == htmlTag.endTag && tagName.equals(htmlTag.tagName);
     }
 
     @Override

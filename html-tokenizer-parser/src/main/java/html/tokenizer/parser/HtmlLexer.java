@@ -18,24 +18,15 @@ import java.util.regex.Pattern;
  */
 public final class HtmlLexer {
 
-    private static final String START_TOKEN = "<(/?)";
-    public static final String END_TOKEN = ">";
-    public static final String DOCUMENT_TYPE = "!DOCTYPE";
-    public static final String NAME = "([a-zA-Z][a-zA-Z0-9-.]*)";
-    public static final String REST_OF_TAG_CONTENT = "[^>]*";
+    private static final String TOKEN =
+              "<(/?)"
+            + "(([a-zA-Z][a-zA-Z0-9-.]*)|!DOCTYPE)"
+            + "[^>]*"
+            + ">";
 
-    private static final Pattern HTML_TAG;
-
-    static {
-        final String TOKEN = START_TOKEN
-                + "(%s|%s)".formatted(DOCUMENT_TYPE, NAME)
-                + REST_OF_TAG_CONTENT
-                + END_TOKEN;
-
-        HTML_TAG = Pattern.compile(
-                TOKEN,
-                Pattern.CASE_INSENSITIVE);
-    }
+    private static final Pattern HTML_TAG = Pattern.compile(
+            TOKEN,
+            Pattern.CASE_INSENSITIVE);
 
     private final Matcher htmlInput;
 

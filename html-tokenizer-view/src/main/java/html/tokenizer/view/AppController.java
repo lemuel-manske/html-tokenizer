@@ -3,6 +3,7 @@ package html.tokenizer.view;
 import html.tokenizer.parser.HtmlParser;
 import html.tokenizer.parser.HtmlReport;
 import html.tokenizer.parser.MissingEndTag;
+import html.tokenizer.parser.TagOccurrence;
 import html.tokenizer.parser.UnexpectedEndTag;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -16,6 +17,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
+import sort.QuickSort;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,11 +30,11 @@ public class AppController {
     @FXML private TextField chosenFile;
     @FXML private Button runParser;
     @FXML private TextArea parsingOutput;
-    @FXML private TableView<HtmlReport.TagOccurrence> tags;
-    @FXML private TableColumn<HtmlReport.TagOccurrence, String> tagId;
-    @FXML private TableColumn<HtmlReport.TagOccurrence, Integer> tagOccurrences;
+    @FXML private TableView<TagOccurrence> tags;
+    @FXML private TableColumn<TagOccurrence, String> tagId;
+    @FXML private TableColumn<TagOccurrence, Integer> tagOccurrences;
 
-    private final ObservableList<HtmlReport.TagOccurrence> tagsList = FXCollections.observableArrayList();
+    private final ObservableList<TagOccurrence> tagsList = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
@@ -89,7 +91,7 @@ public class AppController {
         }
 
         catch (UnexpectedEndTag e) {
-            String unexpectEndTag = View.UNEXPECTED_END_TAG_WHEN_ANOTHER_WAS_EXPECTED.formatted(e.unexpectedTag(), e.expectedTag());
+            String unexpectEndTag = View.UNEXPECTED_END_TAG_WHEN_ANOTHER_WAS_EXPECTED.formatted(e.getUnexpectedTag(), e.getExpectedTag());
 
             tagsList.clear();
 
@@ -97,7 +99,7 @@ public class AppController {
         }
 
         catch (MissingEndTag e) {
-            String missingEndTag = View.MISSING_END_TAG.formatted(e.missingTag());
+            String missingEndTag = View.MISSING_END_TAG.formatted(e.getMissingTag());
 
             tagsList.clear();
 
@@ -108,7 +110,7 @@ public class AppController {
     private void updateTableWith(HtmlReport htmlReport) {
         tagsList.clear();
 
-        tagsList.addAll(htmlReport.getSortedTags());
+        tagsList.addAll(htmlReport.sortTagOccurrences(new QuickSort<>()));
 
         tags.setItems(tagsList);
 

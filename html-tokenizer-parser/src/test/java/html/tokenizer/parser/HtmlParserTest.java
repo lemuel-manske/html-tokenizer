@@ -55,7 +55,7 @@ class HtmlParserTest {
         MissingEndTag exception =
                 assertThrows(MissingEndTag.class, () -> parse(contentMissingHtmlEndTag));
 
-        assertEquals(HtmlTag.endTag("html"), exception.missingTag());
+        assertEquals(HtmlTag.endTag("html"), exception.getMissingTag());
     }
     
     @Test
@@ -75,8 +75,8 @@ class HtmlParserTest {
         UnexpectedEndTag exception =
                 assertThrows(UnexpectedEndTag.class, () -> parse(contentWithUnexpectedMetaEndTagForHtmlStartTag));
 
-        assertEquals(HtmlTag.endTag("meta"), exception.unexpectedTag());
-        assertEquals(HtmlTag.endTag("html"), exception.expectedTag());
+        assertEquals(HtmlTag.endTag("meta"), exception.getUnexpectedTag());
+        assertEquals(HtmlTag.endTag("html"), exception.getExpectedTag());
     }
 
     @Test
