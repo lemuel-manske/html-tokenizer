@@ -1,23 +1,27 @@
-# html-tokenizer
+# Analisador HTML
 
-A simple HTML lexer implementation, written in Java. 
+Java 17 - Amazon Corretto.
 
-Uses its own data structures to implement the parser, see [data-structures](./data-structures) for more information.
+**Aluno**: Lemuel Kauê Manske de Liz
 
-Does not support all HTML features, but should be able to parse most HTML documents.
+## Pacotes
 
-Input an HTML file, and the lexer will output a list of tokens and the count of each.
+- [html-tokenizer-view](./html-tokenizer-view): Pacote que contém código relacionado a interface gráfica do aplicativo, não possui lógica do analisador
+- [html-tokenizer-parser](./html-tokenizer-parser): Pacote que contém código relacionado a lógica do analisador de tokens HTML, aqui as estruturas de dados em [data-structures](./data-structures) são utilizadas
+- [data-structures](./data-structures): Pacote que contém código das estruturas de dados utilizadas no projeto: Pilha lista, Lista estática e Lista encadeada e algoritmo de ordenação _quick-sort_, além de outras estruturas de dados implementadas durante a disciplina
 
-See [project's pom](./pom.xml) to check JDK version.
+## Diagrama de classes
 
-## Portuguese
+Link do [diagrama de classes](./class-diagram.jpg)
 
-Um simples lexer de HTML, escrito em Java.
+Os pacotes estsão organizados no diagrama: `list`, `stack`, `sort` e `html-tokenizer-parser`.
 
-Utiliza suas próprias estruturas de dados para implementar o parser, veja [data-structures](./data-structures) para mais informações.
+## Execução
 
-Não suporta todos os recursos do HTML, mas deve ser capaz de analisar a maioria dos documentos HTML.
+Para executar o aplicativo de visualização de tokens HTML, execute o seguinte comando:
 
-Insira um arquivo HTML e o lexer irá gerar uma lista de tokens (tags) e sua contagem.
+```bash
+java -jar Trabalho.jar
+```
 
-Veja o [pom do projeto](./pom.xml) para verificar a versão do JDK.
+Lembrando que é necessário ter o Java 17 instalado na máquina.
